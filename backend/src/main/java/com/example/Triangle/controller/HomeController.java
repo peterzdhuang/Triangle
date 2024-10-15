@@ -14,7 +14,6 @@ public class HomeController {
         return "Hello world";
     }
 
-
     @RequestMapping("/user")
     public Principal user(Principal user){
         return user;
