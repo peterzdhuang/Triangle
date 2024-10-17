@@ -4,6 +4,7 @@ import com.example.Triangle.model.AuthenticationResponse;
 import com.example.Triangle.model.User;
 import com.example.Triangle.service.AuthenticationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +27,10 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody User request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    @GetMapping("/owner/idk")
+    public String response() {
+        return "String";
     }
 }

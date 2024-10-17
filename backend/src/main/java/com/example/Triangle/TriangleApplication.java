@@ -14,5 +14,4 @@ public class TriangleApplication {
 		System.setProperty("SECRET_KEY", dotenv.get("SECRET_KEY"));
 		SpringApplication.run(TriangleApplication.class, args);
 	}
-
 }

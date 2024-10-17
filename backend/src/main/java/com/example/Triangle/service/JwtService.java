@@ -15,6 +15,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     private final String secretKey = System.getProperty("SECRET_KEY");
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -36,19 +37,21 @@ public class JwtService {
         return resolver.apply(claims);
     }
 
-    private Claims extractAllClaims (String token) {
-        return Jwts.parser()
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parser()
                 .verifyWith(getSigninKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
+
     public String generateToken(User user){
         String token = Jwts
                 .builder()
                 .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 3600 * 24))
+                .expiration(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000))
                 .signWith(getSigninKey())
                 .compact();
 

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImp implements UserDetailsService {
-
-
     private final UserRepository repository;
 
     public UserDetailsServiceImp(UserRepository repository) {
