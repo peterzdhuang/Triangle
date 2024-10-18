@@ -1,11 +1,20 @@
 spring:
-  application:
-    name: Triangle
   datasource:
     url: jdbc:postgresql://localhost:5432/Triangle
     username: postgres
     password: postgres
+
   jpa:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+application:
+  security:
+    jwt:
+      secret-key: 4bb6d1dfbafb64a681139d1586b6f1160d18159afd57c8c79136d7490630407c
+      access-token-expiration: 86400000
+      refresh-token-expiration: 604800000

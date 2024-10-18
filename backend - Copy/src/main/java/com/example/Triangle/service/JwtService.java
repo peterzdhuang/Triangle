@@ -16,6 +16,7 @@ import java.util.function.Function;
 public class JwtService {
     private final String secretKey = System.getProperty("SECRET_KEY");
 
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -54,7 +55,6 @@ public class JwtService {
                 .expiration(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000))
                 .signWith(getSigninKey())
                 .compact();
-
         return token;
     }
 
