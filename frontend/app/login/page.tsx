@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link'; // Next.js routing
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -10,6 +12,7 @@ export function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter(); // Next.js router hook
 
   const handleLogin = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
@@ -46,21 +49,20 @@ export function Login() {
           <form className="space-y-4" onSubmit={handleLogin}>
             {error && <div className="text-red-500">{error}</div>}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="Email"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
+                placeholder="Password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -70,6 +72,14 @@ export function Login() {
               Login
             </Button>
           </form>
+          <div className="mt-4 text-center">
+            <p className="text-gray-400">Don't have an account?</p>
+            <Link href="/register">
+              <Button variant="link" className="text-white underline">
+                Sign up
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>
