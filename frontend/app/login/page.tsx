@@ -1,11 +1,19 @@
-'use client'
-import { useState } from 'react';
+'use client';
 
-function Login() {
+import { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+export function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = async () => {
+  const handleLogin = async (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+
     const response = await fetch('http://localhost:8080/login', {
       method: 'POST',
       headers: {
@@ -14,53 +22,56 @@ function Login() {
       body: JSON.stringify({ username, password }),
     });
     
-    const data = await response.text();
-    console.log(data, response);
-    if (response.ok) {
-      // Store the JWT in localStorage or a cookie
-      localStorage.setItem('token', data);
-    } else {
-      alert('Login failed');
-    }
-  };
-  const fetchProtectedData = async () => {
-    const token = localStorage.getItem('token');
-    console.log(token);
-    const response = await fetch('http://localhost:8080/demo', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-  
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-    } else {
-      console.log('Unauthorized or expired token');
-    }
-  };
-  
+    const data = await response.json();
 
+    if (response.ok) {
+      const { access_token } = data; // Assuming access_token is in the response
+      localStorage.setItem('token', access_token); // Store the JWT in localStorage
+      alert('Login successful!'); // Optionally redirect or perform other actions after successful login
+    } else {
+      setError(data.message || 'Login failed.'); // Show error message
+    }
+  };
+  
   return (
-    <div>
-      <input 
-        type="text" 
-        placeholder="Username" 
-        value={username} 
-        style={{ backgroundColor: 'black', color: 'white' }}
-        onChange={(e) => setUsername(e.target.value)} 
-      />
-      <input 
-        type="password" 
-        placeholder="Password" 
-        value={password} 
-        style={{ backgroundColor: 'black', color: 'white' }}
-        onChange={(e) => setPassword(e.target.value)} 
-      />
-      <button onClick={handleLogin}>Login</button>
-      
-      <button onClick={fetchProtectedData}>Check</button>
+    <div className="min-h-screen flex items-center justify-center">
+      <Card className="mx-auto max-w-sm bg-black">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-white">Login</CardTitle>
+          <CardDescription className="text-gray-400">
+            Enter your email and password to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-4" onSubmit={handleLogin}>
+            {error && <div className="text-red-500">{error}</div>}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

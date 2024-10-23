@@ -16,11 +16,12 @@ function Register() {
       },
       body: JSON.stringify({ firstName, lastName, username, password, role }),
     });
-    const data = await response.text();
-    console.log(data, response);
+    const data = await response.json();
+    const { access_token } = data;
+   
     if (response.ok) {
       // Store the JWT in localStorage or a cookie
-      localStorage.setItem('token', data);
+      localStorage.setItem('token', access_token);
     } else {
       alert('Login failed');
     }
