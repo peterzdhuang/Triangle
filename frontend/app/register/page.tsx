@@ -6,7 +6,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import CountryDropdown from '@/components/component/country-dropdown';
-import { AlertDestructive } from '@/components/component/alert';
+import { AlertDestructive } from '@/components/component/bad-alert';
+import { SuccessAlert } from '@/components/component/good-alert';
 
 function Register() {
   const [firstName, setFirstName] = useState('');
@@ -20,6 +21,23 @@ function Register() {
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const isValidEmail = (email : string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  
+  const isValidPassword = (password : string) => {
+    return (
+      password.length >= 8 &&               // At least 8 characters
+      /[A-Z]/.test(password) &&              // At least one uppercase letter
+      /[a-z]/.test(password) &&              // At least one lowercase letter
+      /\d/.test(password) &&                 // At least one number
+      /[!@#$%^&*]/.test(password)            // At least one special character
+    );
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -39,6 +57,15 @@ function Register() {
     }));
     if (!firstName || !lastName || !username || !password || !restaurantName || !restaurantAddress || !city || !province || !postalCode || !country) {
       setError("All fields are required");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setError('Invalid email format');
+      return;
+    }
+  
+    if (!isValidPassword(password)) {
+      setError('Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character');
       return;
     }
 
@@ -74,7 +101,7 @@ function Register() {
 
       if (access_token) {
         localStorage.setItem('token', access_token);
-        alert('Registration successful!');
+        setSuccess(true);
       } else {
         setError('Registration failed: Missing token');
       }
@@ -84,7 +111,7 @@ function Register() {
     }
   }
 
-  const handleCountrySelect = (country) => {
+  const handleCountrySelect = (country : string) => {
     setCountry(country);
   };
 
@@ -100,8 +127,9 @@ function Register() {
         <CardContent>
           <form className="space-y-4" onSubmit={handleRegister}>
             {error && <AlertDestructive message={error} />}
+            {success && <SuccessAlert/>}
             
-            {/* Form Fields */}
+            
             <div className="flex space-x-2">
               <div className="flex-1">
                 <Input
@@ -138,6 +166,13 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Input
+              id="email"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
               id="restaurantName"
               type="text"
               placeholder="Restaurant Name"
@@ -166,7 +201,7 @@ function Register() {
                 onChange={(e) => setProvince(e.target.value)}
                 className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:border-gray-500"
               >
-                <option disabled>Select a province</option>
+                <option disabled value="">Select a province</option>
                 <option value="AB">Alberta</option>
                 <option value="BC">British Columbia</option>
                 <option value="MB">Manitoba</option>
