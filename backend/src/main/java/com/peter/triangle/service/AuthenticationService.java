@@ -2,8 +2,10 @@ package com.peter.triangle.service;
 
 
 import com.peter.triangle.model.AuthenticationResponse;
+import com.peter.triangle.model.Restaurant;
 import com.peter.triangle.model.Token;
 import com.peter.triangle.model.User;
+import com.peter.triangle.repository.RestaurantRepository;
 import com.peter.triangle.repository.TokenRepository;
 import com.peter.triangle.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,21 +26,22 @@ public class AuthenticationService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
     private final TokenRepository tokenRepository;
-
+    private final RestaurantRepository restaurantRepository;
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationService(UserRepository repository,
                                  PasswordEncoder passwordEncoder,
                                  JwtService jwtService,
                                  TokenRepository tokenRepository,
-                                 AuthenticationManager authenticationManager) {
+                                 AuthenticationManager authenticationManager,
+                                 RestaurantRepository restaurantRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
         this.authenticationManager = authenticationManager;
+        this.restaurantRepository = restaurantRepository;
     }
 
     public AuthenticationResponse register(User request) {
@@ -49,15 +52,23 @@ public class AuthenticationService {
         }
 
         User user = new User();
+        Restaurant restaurant = new Restaurant();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-
         user.setRole(request.getRole());
+        restaurant.setRid(restaurant.getRid());
+
+        restaurant.setName(request.getRestaurantName());
+        restaurant.setAddress(request.getRestaurantAddress());
+        restaurant.setCity(request.getCity());
+        restaurant.setProvince(request.getProvince());
+        restaurant.setPostalCode(request.getPostalCode());
+        restaurant.setCountry(request.getCountry());
 
         user = repository.save(user);
+        restaurantRepository.save(restaurant);
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);

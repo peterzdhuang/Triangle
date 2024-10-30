@@ -29,32 +29,34 @@ function Register() {
     return emailRegex.test(email);
   };
   
-  const isValidPassword = (password : string) => {
-    return (
-      password.length >= 8 &&               // At least 8 characters
-      /[A-Z]/.test(password) &&              // At least one uppercase letter
-      /[a-z]/.test(password) &&              // At least one lowercase letter
-      /\d/.test(password) &&                 // At least one number
-      /[!@#$%^&*]/.test(password)            // At least one special character
-    );
-  };
+  const isValidPassword = (input : string) => {
+    let hasLower = false;
+    let hasUpper = false;
+    let hasDigit = false;
+    let hasSpecialChar = false;
+    const normalChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ";
+
+    for (let i = 0; i < input.length; i++) {
+      const char = input[i];
+
+      if (char >= 'a' && char <= 'z') {
+        hasLower = true;
+      } else if (char >= 'A' && char <= 'Z') {
+        hasUpper = true;
+      } else if (char >= '0' && char <= '9') {
+        hasDigit = true;
+      } else if (!normalChars.includes(char)) {
+        hasSpecialChar = true;
+      }
+    }
+    console.log(input.length >= 8, input.length, hasLower , hasUpper , hasDigit , hasSpecialChar)
+    return input.length >= 8 && hasLower && hasUpper && hasDigit && hasSpecialChar;
+  }
 
   const handleRegister = async (e) => {
     e.preventDefault();
     let role = "ADMIN";
-    console.log(JSON.stringify({
-      firstName,
-      lastName,
-      username,
-      password,
-      restaurantName,
-      restaurantAddress,
-      city,
-      province,
-      postalCode,
-      country,
-      role
-    }));
+    
     if (!firstName || !lastName || !username || !password || !restaurantName || !restaurantAddress || !city || !province || !postalCode || !country) {
       setError("All fields are required");
       return;
@@ -68,7 +70,6 @@ function Register() {
       setError('Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character');
       return;
     }
-
     try {
       const response = await fetch('http://localhost:8080/register', {
         method: 'POST',
@@ -102,6 +103,7 @@ function Register() {
       if (access_token) {
         localStorage.setItem('token', access_token);
         setSuccess(true);
+        setError(""); 
       } else {
         setError('Registration failed: Missing token');
       }
