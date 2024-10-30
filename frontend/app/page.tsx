@@ -9,15 +9,24 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+
 
 export default function HomePage() {
   return (
     <ThemeProvider attribute="class">
+
       <div className="min-h-screen bg-gradient-to-b from-primary-50 to-primary-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-200">
         <header className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Utensils className="h-8 w-8 text-primary dark:text-primary-400" />
-            <span className="text-2xl font-bold text-primary dark:text-primary-400">DineEase</span>
+            <span className="text-2xl font-bold text-primary dark:text-primary-400">Triangle</span>
           </div>
           <nav className="flex items-center space-x-4">
             <ModeToggle />
@@ -44,7 +53,7 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold mb-8 text-center">How It Works</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
-                { icon: Laptop, title: "Create your Square Online ordering page", description: "All ordering pages offer an app-like experience for easy browsing, ordering, and payment on mobile." },
+                { icon: Laptop, title: "Create your Triangle Online ordering page", description: "All ordering pages offer an app-like experience for easy browsing, ordering, and payment on mobile." },
                 { icon: Printer, title: "Generate and print your QR codes", description: "Each QR code is uniquely mapped to one of your tables, walk-up windows, parking spots, or other ordering locations." },
                 { icon: Smartphone, title: "Diners scan QR codes to open your ordering page", description: "Guests can order, add notes, and pay immediately or keep ordering on the same tab." },
                 { icon: ChefHat, title: "Orders go to your POS and kitchen printers", description: "Your staff can prep and run orders, or you can provide guests with instructions on where to pick them up." },
@@ -80,23 +89,38 @@ export default function HomePage() {
             </div>
           </section>
 
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-center">What Our Customers Say</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                { name: "John Doe", role: "Restaurant Owner", quote: "DineEase has transformed our ordering process. Our customers love the convenience, and we've seen a 30% increase in table turnover." },
-                { name: "Jane Smith", role: "Cafe Manager", quote: "The QR code menus have been a game-changer for us. We can update our specials instantly, and it's reduced our printing costs significantly." },
-                { name: "Mike Johnson", role: "Bar Owner", quote: "The payment integration is seamless. We've noticed fewer errors in orders and faster payment processing, which our customers appreciate." },
-              ].map((testimonial, index) => (
-                <div key={index} className="flex flex-col items-center text-center p-6 bg-white dark:bg-gray-700 rounded-lg shadow-md">
-                  <Star className="h-8 w-8 text-yellow-400 mb-4" />
-                  <p className="text-sm mb-4">"{testimonial.quote}"</p>
-                  <p className="font-semibold">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
-                </div>
+          <Carousel>
+            <CarouselContent>
+              {[{
+                name: "John Doe", 
+                role: "Restaurant Owner", 
+                quote: "DineEase has transformed our ordering process. Our customers love the convenience, and we've seen a 30% increase in table turnover."
+              },
+              {
+                name: "Jane Smith", 
+                role: "Cafe Manager", 
+                quote: "The QR code menus have been a game-changer for us. We can update our specials instantly, and it's reduced our printing costs significantly."
+              },
+              {
+                name: "Mike Johnson", 
+                role: "Bar Owner", 
+                quote: "The payment integration is seamless. We've noticed fewer errors in orders and faster payment processing, which our customers appreciate."
+              }].map((testimonial, index) => (
+                <CarouselItem key={index}>
+                  <div className="flex flex-col items-center text-center p-6 bg-white dark:bg-gray-700 rounded-lg shadow-md">
+                    <Star className="h-8 w-8 text-yellow-400 mb-4" />
+                    <p className="text-sm mb-4">"{testimonial.quote}"</p>
+                    <p className="font-semibold">{testimonial.name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
+                  </div>
+                </CarouselItem>
               ))}
-            </div>
-          </section>
+            </CarouselContent>
+            
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+
 
           <section className="mb-16">
             <h2 className="text-3xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
@@ -115,6 +139,7 @@ export default function HomePage() {
               ))}
             </Accordion>
           </section>
+
 
           <section className="text-center">
             <h2 className="text-3xl font-bold mb-6">Ready to Transform Your Restaurant?</h2>
