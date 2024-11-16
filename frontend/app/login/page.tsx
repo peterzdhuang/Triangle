@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import Link from 'next/link'; // Next.js routing
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,6 @@ export function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter(); // Next.js router hook
 
   const handleLogin = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
@@ -26,14 +25,26 @@ export function Login() {
     });
     
     const data = await response.json();
-
-    if (response.ok) {
-      const { access_token } = data; // Assuming access_token is in the response
-      localStorage.setItem('token', access_token); // Store the JWT in localStorage
-      alert('Login successful!'); // Optionally redirect or perform other actions after successful login
-    } else {
-      setError(data.message || 'Login failed.'); // Show error message
+    if (!response.ok) {
+      const errorData = await response.json();
+      setError(`Login failed: ${errorData.message || 'Unknown error'}`);
+      return;
     }
+
+    
+      const { access_token, message } = data; // Assuming access_token is in the response
+
+      if (access_token) {
+        localStorage.setItem('token', access_token);
+        setError(""); 
+        if (message) {
+          redirect(message);
+        }
+      } else {
+        setError('Login failed: Missing token');
+      }
+      
+
   };
   
   return (

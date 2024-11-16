@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
 import Link from 'next/link'; // Next.js routing
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import CountryDropdown from '@/components/component/country-dropdown';
 import { AlertDestructive } from '@/components/component/bad-alert';
 import { SuccessAlert } from '@/components/component/good-alert';
+import { useRouter } from 'next/navigation'
 
 function Register() {
   const [firstName, setFirstName] = useState('');
@@ -23,6 +24,7 @@ function Register() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [email, setEmail] = useState('');
+  const router = useRouter();
 
   const isValidEmail = (email : string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -98,15 +100,20 @@ function Register() {
       }
 
       const data = await response.json();
-      const { access_token } = data;
+      console.log(data);
+      const { access_token, message } = data;
 
       if (access_token) {
         localStorage.setItem('token', access_token);
         setSuccess(true);
         setError(""); 
+        if (message) {
+          router.push(`${message}?rid=${message}`);
+        }
       } else {
         setError('Registration failed: Missing token');
       }
+      
     } catch (error) {
       console.error('Error during registration:', error);
       setError('Registration failed: Server error');
