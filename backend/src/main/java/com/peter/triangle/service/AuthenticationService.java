@@ -10,6 +10,8 @@ import com.peter.triangle.repository.TokenRepository;
 import com.peter.triangle.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +21,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -58,7 +63,8 @@ public class AuthenticationService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
-        restaurant.setRid(restaurant.getRid());
+
+
 
         restaurant.setName(request.getRestaurantName());
         restaurant.setAddress(request.getRestaurantAddress());
@@ -67,16 +73,17 @@ public class AuthenticationService {
         restaurant.setPostalCode(request.getPostalCode());
         restaurant.setCountry(request.getCountry());
 
-        user = repository.save(user);
+
         restaurantRepository.save(restaurant);
+        user.setRid(restaurant.getRid());
+        user = repository.save(user);
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
         saveUserToken(accessToken, refreshToken, user);
 
-        return new AuthenticationResponse(accessToken, refreshToken,"User registration was successful");
-
+        return new AuthenticationResponse(accessToken, refreshToken, String.format("/restaurant/%s", user.getRid()));
     }
 
     public AuthenticationResponse authenticate(User request) {
@@ -94,7 +101,7 @@ public class AuthenticationService {
         revokeAllTokenByUser(user);
         saveUserToken(accessToken, refreshToken, user);
 
-        return new AuthenticationResponse(accessToken, refreshToken, "User login was successful");
+        return new AuthenticationResponse(accessToken, refreshToken, String.format("/restaurant/%s", user.getRid()));
 
     }
     private void revokeAllTokenByUser(User user) {
