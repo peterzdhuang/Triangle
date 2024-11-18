@@ -1,10 +1,8 @@
 package com.peter.triangle.service;
 
 
-import com.peter.triangle.model.AuthenticationResponse;
-import com.peter.triangle.model.Restaurant;
-import com.peter.triangle.model.Token;
-import com.peter.triangle.model.User;
+import com.peter.triangle.model.*;
+import com.peter.triangle.repository.MenuRepository;
 import com.peter.triangle.repository.RestaurantRepository;
 import com.peter.triangle.repository.TokenRepository;
 import com.peter.triangle.repository.UserRepository;
@@ -20,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,19 +33,16 @@ public class AuthenticationService {
     private final TokenRepository tokenRepository;
     private final RestaurantRepository restaurantRepository;
     private final AuthenticationManager authenticationManager;
+    private final MenuRepository menuRepository;
 
-    public AuthenticationService(UserRepository repository,
-                                 PasswordEncoder passwordEncoder,
-                                 JwtService jwtService,
-                                 TokenRepository tokenRepository,
-                                 AuthenticationManager authenticationManager,
-                                 RestaurantRepository restaurantRepository) {
+    public AuthenticationService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, TokenRepository tokenRepository, RestaurantRepository restaurantRepository, AuthenticationManager authenticationManager, MenuRepository menuRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
-        this.authenticationManager = authenticationManager;
         this.restaurantRepository = restaurantRepository;
+        this.authenticationManager = authenticationManager;
+        this.menuRepository = menuRepository;
     }
 
     public AuthenticationResponse register(User request) {
@@ -58,6 +54,7 @@ public class AuthenticationService {
 
         User user = new User();
         Restaurant restaurant = new Restaurant();
+        Menu menu = new Menu();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setUsername(request.getUsername());
@@ -75,15 +72,19 @@ public class AuthenticationService {
 
 
         restaurantRepository.save(restaurant);
+
+        menu.setMenuId(restaurant.getM_id());
+        menu.setFoods(new ArrayList<Food>());
         user.setRid(restaurant.getRid());
         user = repository.save(user);
+        menu = menuRepository.save(menu);
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
         saveUserToken(accessToken, refreshToken, user);
 
-        return new AuthenticationResponse(accessToken, refreshToken, String.format("/restaurant/%s", user.getRid()));
+        return new AuthenticationResponse(accessToken, refreshToken, user.getRid().toString());
     }
 
     public AuthenticationResponse authenticate(User request) {
@@ -101,7 +102,7 @@ public class AuthenticationService {
         revokeAllTokenByUser(user);
         saveUserToken(accessToken, refreshToken, user);
 
-        return new AuthenticationResponse(accessToken, refreshToken, String.format("/restaurant/%s", user.getRid()));
+        return new AuthenticationResponse(accessToken, refreshToken, user.getRid().toString());
 
     }
     private void revokeAllTokenByUser(User user) {

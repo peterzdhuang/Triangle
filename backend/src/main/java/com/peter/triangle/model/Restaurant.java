@@ -14,8 +14,9 @@ public class Restaurant {
     @Column(name = "rid")
     private UUID rid;
 
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "m_id")
-    private int m_id;
+    private UUID m_id;
 
     @Column(name = "name")
     private String name;
@@ -40,7 +41,7 @@ public class Restaurant {
         return rid;
     }
 
-    public int getM_id() {
+    public UUID getM_id() {
         return m_id;
     }
 
@@ -72,7 +73,7 @@ public class Restaurant {
         this.rid = rid;
     }
 
-    public void setM_id(int m_id) {
+    public void setM_id(UUID m_id) {
         this.m_id = m_id;
     }
 
