@@ -16,6 +16,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { Footer } from '@/components/component/footer'
+import { TaskBar } from '@/components/component/taskbar'
 
 
 export default function HomePage() {
@@ -23,18 +25,7 @@ export default function HomePage() {
     <ThemeProvider attribute="class">
 
       <div className="min-h-screen bg-gradient-to-b from-primary-50 to-primary-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-200">
-        <header className="container mx-auto px-4 py-6 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Utensils className="h-8 w-8 text-primary dark:text-primary-400" />
-            <span className="text-2xl font-bold text-primary dark:text-primary-400">Triangle</span>
-          </div>
-          <nav className="flex items-center space-x-4">
-            <ModeToggle />
-            <Button asChild variant="outline">
-              <Link href="/login">Login</Link>
-            </Button>
-          </nav>
-        </header>
+        <TaskBar/>
 
         <main className="container mx-auto px-4 py-12">
           <section className="text-center mb-16">
@@ -152,39 +143,7 @@ export default function HomePage() {
           </section>
         </main>
 
-        <footer className="bg-primary-200 dark:bg-gray-700 py-12 mt-12">
-          <div className="container mx-auto px-4 grid justify-center gap-12 md:grid-cols-2 lg:grid-cols-3 align-middle">
-            
-            <div>
-              <h3 className="font-bold text-lg mb-4">Quick Links</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/features">Features</Link></li>
-                <li><Link href="/pricing">Pricing</Link></li>
-                <li><Link href="/contact">Contact Us</Link></li>
-                <li><Link href="/blog">Blog</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg mb-4">Legal</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/terms">Terms of Service</Link></li>
-                <li><Link href="/privacy">Privacy Policy</Link></li>
-                <li><Link href="/cookies">Cookie Policy</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg mb-4">Connect With Us</h3>
-              <ul className="space-y-2 text-sm">
-                <li>Email: support@dineease.com</li>
-                <li>Phone: (123) 456-7890</li>
-                <li>Address: 123 Restaurant St, Foodville, FK 12345</li>
-              </ul>
-            </div>
-          </div>
-          <div className="container mx-auto px-4 mt-8 pt-8 border-t border-gray-300 dark:border-gray-600 text-center text-sm">
-            © 2024 DineEase. All rights reserved.
-          </div>
-        </footer>
+        <Footer/>
       </div>
     </ThemeProvider>
   )

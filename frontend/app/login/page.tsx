@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link'; // Next.js routing
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,7 @@ export function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
+  const router = useRouter();
   const handleLogin = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
 
@@ -38,7 +38,7 @@ export function Login() {
         localStorage.setItem('token', access_token);
         setError(""); 
         if (message) {
-          redirect(message);
+          router.push(`${message}?rid=${message}`);
         }
       } else {
         setError('Login failed: Missing token');

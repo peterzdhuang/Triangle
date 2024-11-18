@@ -9,6 +9,7 @@ import CountryDropdown from '@/components/component/country-dropdown';
 import { AlertDestructive } from '@/components/component/bad-alert';
 import { SuccessAlert } from '@/components/component/good-alert';
 import { useRouter } from 'next/navigation'
+import { TaskBar } from '@/components/component/taskbar';
 
 function Register() {
   const [firstName, setFirstName] = useState('');
@@ -51,8 +52,8 @@ function Register() {
         hasSpecialChar = true;
       }
     }
-    console.log(input.length >= 8, input.length, hasLower , hasUpper , hasDigit , hasSpecialChar)
-    return input.length >= 8 && hasLower && hasUpper && hasDigit && hasSpecialChar;
+    return true;
+    //return input.length >= 8 && hasLower && hasUpper && hasDigit && hasSpecialChar;
   }
 
   const handleRegister = async (e) => {
@@ -100,7 +101,6 @@ function Register() {
       }
 
       const data = await response.json();
-      console.log(data);
       const { access_token, message } = data;
 
       if (access_token) {
@@ -108,7 +108,7 @@ function Register() {
         setSuccess(true);
         setError(""); 
         if (message) {
-          router.push(`${message}?rid=${message}`);
+          router.push(`/restaurant/${message}?rid=${message}`);
         }
       } else {
         setError('Registration failed: Missing token');
@@ -125,7 +125,8 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen items-center justify-center">
+      <TaskBar/>
       <Card className="mx-auto max-w-sm bg-black">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-white">Register</CardTitle>
