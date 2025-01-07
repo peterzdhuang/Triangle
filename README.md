@@ -2,6 +2,7 @@
 
 ## Overview
 Triangle is a comprehensive platform designed to streamline ordering and payments for restaurants through QR code menu systems. It provides a seamless and app-like experience for both customers and staff, enabling easy ordering, payment, and management of orders. Perfect for restaurants of all sizes, Triangle ensures an efficient and modern dining experience.
+
 ![image](https://github.com/user-attachments/assets/b5be17b2-c124-49fb-b0c8-43b880546329)
 ---
 
